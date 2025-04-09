@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Todoリスト</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Noto+Serif+JP&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Noto Serif JP', serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            padding: 40px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            text-align: center;
+            color: #222;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        input[type="text"], input[type="date"] {
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #444;
+            color: #fff;
+            border: none;
+            padding: 6px 14px;
+            margin: 4px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #222;
+        }
+
+        .task {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fcfcfc;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: grab;
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+        }
+
+        .task span {
+            font-size: 1rem;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .edit-inputs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .edit-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Todoリスト</h1>
+
+        <!-- タスク追加 -->
+        <form method="post" action="{% url 'add_task' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">追加</button>
+        </form>
+
+        <hr>
+
+        <!-- タスクリスト（並び替え可能） -->
+        <ul id="task-list" class="task-list">
+            {% for task in tasks %}
+                <li class="task" data-id="{{ task.id }}">
+                    <div class="task-left">
+                        <input type="checkbox"
+                               {% if task.completed %}checked{% endif %}
+                               data-url="{% url 'toggle_task' task.id %}"
+                               onchange="toggleTask(this)">
+                        <div class="task-content" id="content-{{ task.id }}">
+                            <span class="{% if task.completed %}completed{% endif %}">
+                                {{ task.title }} - 締切: 
+                                {% if task.due_date %}
+                                    {{ task.due_date }}
+                                {% else %}
+                                    なし
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="edit-form" id="edit-form-{{ task.id }}" style="display: none;">
+                            <div class="edit-inputs">
+                                <input type="text" id="title-{{ task.id }}" value="{{ task.title }}">
+                                <input type="date" id="due-{{ task.id }}" value="{{ task.due_date|date:'Y-m-d' }}">
+                            </div>
+                            <div class="edit-buttons">
+                                <button type="button" onclick="saveTask({{ task.id }})">保存</button>
+                                <button type="button" onclick="cancelEdit({{ task.id }})">キャンセル</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="task-right">
+                        {% if task.completed %}
+                            <form method="post" action="{% url 'delete_task' task.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">削除</button>
+                            </form>
+                        {% endif %}
+                        <button type="button" onclick="startEdit({{ task.id }})">編集</button>
+                    </div>
+                </li>
+            {% empty %}
+                <li>タスクはありません。</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <script>
+        function toggleTask(checkbox) {
+            const url = checkbox.dataset.url;
+            fetch(url, {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            }).then(() => location.reload());
+        }
+
+        function startEdit(id) {
+            document.getElementById(`content-${id}`).style.display = "none";
+            document.getElementById(`edit-form-${id}`).style.display = "block";
+        }
+
+        function cancelEdit(id) {
+            document.getElementById(`edit-form-${id}`).style.display = "none";
+            document.getElementById(`content-${id}`).style.display = "block";
+        }
+
+        function saveTask(id) {
+            const title = document.getElementById(`title-${id}`).value;
+            const due_date = document.getElementById(`due-${id}`).value;
+
+            fetch(`/update_task/${id}/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    title: title,
+                    due_date: due_date
+                })
+            }).then(response => {
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert("保存に失敗しました");
+                }
+            });
+        }
+
+        // ✅ 並び替え機能を復活（インライン編集と共存）
+        const el = document.getElementById('task-list');
+        new Sortable(el, {
+            animation: 150,
+            onEnd: function () {
+                const taskIds = Array.from(el.children).map(li => li.dataset.id);
+                fetch("{% url 'reorder_tasks' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                    body: JSON.stringify({ task_ids: taskIds })
+                });
+            }
+        });
+    </script>
+</body>
+</html>
