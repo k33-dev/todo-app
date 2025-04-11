@@ -41,7 +41,7 @@ ROOT_URLCONF = 'todo_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'todo' / 'templates'],  # ← 修正済み：テンプレートパス
+        'DIRS': [BASE_DIR / 'todo' / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,9 +89,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 
+# ✅ 警告回避のために .resolve() を追加
+STATICFILES_DIRS = [
+    (BASE_DIR / 'todo' / 'static').resolve(),
+]
+
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# ✅ ログイン関連の設定（追記）
+# ✅ ログイン関連の設定
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
