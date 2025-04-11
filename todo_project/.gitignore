@@ -1,0 +1,8 @@
+# Python環境用の.gitignore
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+db.sqlite3
