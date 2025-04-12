@@ -2,13 +2,21 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NE5WWZLY37"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NE5WWZLY37');
+  </script>
   <title>Todoリスト</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Noto+Serif+JP&display=swap" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
   <style>
     body {
       font-family: 'Noto Serif JP', serif;
-      background-image: url("/static/img/bg1.jpg");
+      background-image: url("img/bg1.jpg");
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -76,7 +84,6 @@
     #bg-upload {
       display: none;
     }
-
     .task-list {
       list-style: none;
       padding: 0;
@@ -176,9 +183,9 @@
     }
 
     @keyframes sparkle {
-      0% { opacity: 1; transform: translateY(-50%) scale(1); }
-      50% { transform: translateY(-50%) scale(1.6); }
-      100% { opacity: 0; transform: translateY(-50%) scale(0); }
+      0% { opacity: 1; transform: scale(1); }
+      50% { transform: scale(1.6); }
+      100% { opacity: 0; transform: scale(0); }
     }
 
     .menu-button {
@@ -275,7 +282,7 @@
   </div>
 
   <script>
-    const DEFAULT_BG = "/static/img/bg1.jpg";
+    const DEFAULT_BG = "img/bg1.jpg";
     let tasks = JSON.parse(localStorage.getItem("tasks") || "[]");
 
     function sparkleEffect(taskElement) {

@@ -11,7 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 def index(request):
     tasks = Task.objects.filter(user=request.user).order_by('order')
     form = TaskForm()
-    return render(request, 'todo/task_list.html', {'tasks': tasks, 'form': form})
+    return render(request, 'todo/index.html', {'tasks': tasks, 'form': form})
 
 @login_required
 @require_POST
