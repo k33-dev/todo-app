@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-NE5WWZLY37"></script>
   <script>
@@ -23,20 +24,21 @@
       margin: 0;
       padding: 0;
       color: #333;
+      font-size: 16px;
     }
 
     .container {
       max-width: 700px;
-      margin: 60px auto;
+      margin: 40px auto;
       background-color: rgba(255, 255, 255, 0.95);
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      padding: 40px;
+      padding: 20px;
     }
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.4rem;
+      font-size: 2rem;
       text-align: center;
       margin-bottom: 20px;
     }
@@ -52,7 +54,7 @@
 
     .input-container input[type="text"] {
       padding: 10px 50px 10px 14px;
-      font-size: 1rem;
+      font-size: 1.1rem;
       border: 2px solid #333;
       border-radius: 999px;
       width: 100%;
@@ -64,9 +66,9 @@
       top: 50%;
       right: 8px;
       transform: translateY(-50%);
-      width: 36px;
-      height: 36px;
-      font-size: 1.2rem;
+      width: 40px;
+      height: 40px;
+      font-size: 1.3rem;
       border-radius: 50%;
       padding: 0;
       background-color: #28a745;
@@ -84,6 +86,7 @@
     #bg-upload {
       display: none;
     }
+
     .task-list {
       list-style: none;
       padding: 0;
@@ -103,6 +106,7 @@
       position: relative;
       opacity: 1;
       transition: opacity 0.3s ease;
+      flex-wrap: wrap;
     }
 
     .task:active {
@@ -118,6 +122,8 @@
       align-items: center;
       gap: 14px;
       flex-grow: 1;
+      flex-wrap: wrap;
+      word-break: break-word;
     }
 
     .task-left label {
@@ -192,8 +198,8 @@
       position: fixed;
       top: 16px;
       left: 16px;
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background-color: #444;
       display: flex;
@@ -248,8 +254,8 @@
     .menu-item {
       background-color: white;
       color: #333;
-      padding: 6px 12px;
-      font-size: 14px;
+      padding: 10px;
+      font-size: 1rem;
       border: 1px solid #ccc;
       border-radius: 6px;
       cursor: pointer;
@@ -259,6 +265,12 @@
 
     .menu-item:hover {
       background-color: #f0f0f0;
+    }
+
+    .edit-input {
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
     }
   </style>
 </head>
